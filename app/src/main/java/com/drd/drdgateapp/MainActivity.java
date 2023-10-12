@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Runnable runnable;
     int delay = 10000;
 
+
     private ImageView qrCodeIV;
     //private EditText dataEdt;
     //private Button generateQrBtn;
