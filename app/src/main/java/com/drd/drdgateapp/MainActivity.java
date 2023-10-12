@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-    private void load_qr()
+    private void load_qr(String mytext)
     {
         //Toast.makeText(MainActivity.this, "Reload Qr Code",Toast.LENGTH_SHORT).show();
 
@@ -81,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         String gettime = DateFormat.format(time, noteTS) + "";
         String getdate = DateFormat.format(date, noteTS) + "";
 
-        String mytext = "[{\"value_id\":\"drd-attendance\",\"return_id\":\"1\",\"time_id\":\""+gettime+"\",\"date_id\":\""+getdate+"\"}]";
+        //Toast.makeText(MainActivity.this,mytext,Toast.LENGTH_SHORT).show();
+
+        //String mytext = "[{\"value_id\":\"drd-attendance\",\"return_id\":\"1\",\"time_id\":\""+gettime+"\",\"date_id\":\""+getdate+"\"}]";
 
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -124,11 +127,12 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
                 handler.postDelayed(runnable, delay);
-                load_qr();
+                //load_qr();
+                get_qr_code_api();
             }
         }, delay);
-        load_qr();
-        test_api_call();
+        //load_qr();
+        get_qr_code_api();
         super.onResume();
     }
 
@@ -138,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacks(runnable); //stop handler when activity not visible super.onPause();
     }
 
-    private void test_api_call(){
+    private void get_qr_code_api(){
         ApiService apiService = RetrofitClient.getRetrofitInstance().create(ApiService.class);
 
-        Call<ResponseBody> call = apiService.testing("98c08565401579448aad7c64033dcb4081906dcb");
+        Call<ResponseBody> call = apiService.get_qr_code_api("98c08565401579448aad7c64033dcb4081906dcb");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -149,13 +153,13 @@ public class MainActivity extends AppCompatActivity {
                     // Handle success response
                     // response.body() contains the response data
 
-                    Toast.makeText(MainActivity.this,"onResponse",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this,"onResponse",Toast.LENGTH_SHORT).show();
 
-//                    try {
-//                        writeTv(response.body().string());
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
+                    try {
+                        load_qr(response.body().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else {
                     // Handle error response
                 }
