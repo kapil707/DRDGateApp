@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 
@@ -18,6 +19,10 @@ import java.util.Calendar;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     //https://www.geeksforgeeks.org/how-to-generate-qr-code-in-android/
@@ -123,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, delay);
         load_qr();
+        test_api_call();
         super.onResume();
     }
 
@@ -130,5 +136,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(runnable); //stop handler when activity not visible super.onPause();
+    }
+
+    private void test_api_call(){
+        ApiService apiService = RetrofitClient.getRetrofitInstance().create(ApiService.class);
+
+        Call<ResponseBody> call = apiService.testing("98c08565401579448aad7c64033dcb4081906dcb");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    // Handle success response
+                    // response.body() contains the response data
+
+                    Toast.makeText(MainActivity.this,"onResponse",Toast.LENGTH_SHORT).show();
+
+//                    try {
+//                        writeTv(response.body().string());
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+                } else {
+                    // Handle error response
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // Handle network failures or other errors
+                Log.e("Bg-service-onFailure", " " + t.toString());
+                Toast.makeText(MainActivity.this,"show_rider_chemist_photo_api onFailure",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
