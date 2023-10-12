@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     Handler handler = new Handler();
     Runnable runnable;
-    int delay = 5000;
+    int delay = 10000;
 
     private ImageView qrCodeIV;
     //private EditText dataEdt;
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 // Handle network failures or other errors
                 Log.e("Bg-service-onFailure", " " + t.toString());
-                Toast.makeText(MainActivity.this,"show_rider_chemist_photo_api onFailure",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"get_qr_code_api onFailure",Toast.LENGTH_SHORT).show();
             }
         });
     }
